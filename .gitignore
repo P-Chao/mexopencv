@@ -7,7 +7,6 @@
 octave-workspace
 
 # compiled outputs and binaries
-*.mex*
 *.a
 *.o
 *.lib
@@ -16,7 +15,6 @@ octave-workspace
 *.idb
 *.ilk
 *.exp
-*.dll
 *.so
 *.dylib
 *.exe

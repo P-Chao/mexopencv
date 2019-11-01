@@ -383,6 +383,8 @@ function s = compiler_str()
         elseif strcmp(cc.Manufacturer, 'Microsoft')
             if ~isempty(strfind(cc.Name, 'Visual'))  % Visual Studio
                 switch cc.Version
+                    case '16.0'
+                        s = '';    % VS2019
                     case '15.0'
                         s = 'vc15';    % VS2017
                     case '14.0'
@@ -461,7 +463,7 @@ function s = compiler_str()
             s = 'mingw';
         end
         if isempty(s)
-            error('mexopencv:make', 'Unsupported C++ compiler: %s', cc.Name);
+            %error('mexopencv:make', 'Unsupported C++ compiler: %s', cc.Name);
         end
     end
 end
