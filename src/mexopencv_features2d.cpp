@@ -116,7 +116,7 @@ Ptr<ORB> createORB(
                 "Unrecognized option %s", key.c_str());
     }
     return ORB::create(nfeatures, scaleFactor, nlevels, edgeThreshold,
-        firstLevel, WTA_K, scoreType, patchSize, fastThreshold);
+        firstLevel, WTA_K, cv::ORB::ScoreType(scoreType), patchSize, fastThreshold);
 }
 
 Ptr<MSER> createMSER(
@@ -184,7 +184,7 @@ Ptr<FastFeatureDetector> createFastFeatureDetector(
             mexErrMsgIdAndTxt("mexopencv:error",
                 "Unrecognized option %s", key.c_str());
     }
-    return FastFeatureDetector::create(threshold, nonmaxSuppression, type);
+    return FastFeatureDetector::create(threshold, nonmaxSuppression, cv::FastFeatureDetector::DetectorType(type));
 }
 
 Ptr<GFTTDetector> createGFTTDetector(
@@ -309,7 +309,7 @@ Ptr<KAZE> createKAZE(
                 "Unrecognized option %s", key.c_str());
     }
     return KAZE::create(extended, upright, threshold,
-        nOctaves, nOctaveLayers, diffusivity);
+        nOctaves, nOctaveLayers, cv::KAZE::DiffusivityType(diffusivity));
 }
 
 Ptr<AKAZE> createAKAZE(
@@ -345,8 +345,8 @@ Ptr<AKAZE> createAKAZE(
             mexErrMsgIdAndTxt("mexopencv:error",
                 "Unrecognized option %s", key.c_str());
     }
-    return AKAZE::create(descriptor_type, descriptor_size, descriptor_channels,
-        threshold, nOctaves, nOctaveLayers, diffusivity);
+    return AKAZE::create(cv::AKAZE::DescriptorType(descriptor_type), descriptor_size, descriptor_channels,
+        threshold, nOctaves, nOctaveLayers, cv::KAZE::DiffusivityType(diffusivity));
 }
 
 Ptr<AgastFeatureDetector> createAgastFeatureDetector(
@@ -370,7 +370,7 @@ Ptr<AgastFeatureDetector> createAgastFeatureDetector(
             mexErrMsgIdAndTxt("mexopencv:error",
                 "Unrecognized option %s", key.c_str());
     }
-    return AgastFeatureDetector::create(threshold, nonmaxSuppression, type);
+    return AgastFeatureDetector::create(threshold, nonmaxSuppression, cv::AgastFeatureDetector::DetectorType(type));
 }
 
 #ifdef HAVE_OPENCV_XFEATURES2D
@@ -604,7 +604,7 @@ Ptr<DAISY> createDAISY(
                 "Unrecognized option %s", key.c_str());
     }
     return DAISY::create(radius, q_radius, q_theta, q_hist,
-        norm, H, interpolation, use_orientation);
+        cv::xfeatures2d::DAISY::NormalizationType(norm), H, interpolation, use_orientation);
 }
 
 Ptr<MSDDetector> createMSDDetector(

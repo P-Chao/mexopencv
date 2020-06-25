@@ -156,7 +156,7 @@ MxArray toStruct(const std::vector<cv::detail::CameraParams> &cameras);
  * @param p smart poitner to an instance of FeaturesFinder
  * @return output MxArray structure
  */
-MxArray toStruct(cv::Ptr<cv::detail::FeaturesFinder> p);
+MxArray toStruct(cv::Ptr<cv::Stitcher::FeaturesFinder> p);
 
 /** Convert a FeaturesMatcher to MxArray
  * @param p smart poitner to an instance of FeaturesMatcher

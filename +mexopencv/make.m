@@ -383,6 +383,8 @@ function s = compiler_str()
         elseif strcmp(cc.Manufacturer, 'Microsoft')
             if ~isempty(strfind(cc.Name, 'Visual'))  % Visual Studio
                 switch cc.Version
+                    case '16.0'
+                        s = 'vc16';    % VS2019
                     case '15.0'
                         s = 'vc15';    % VS2017
                     case '14.0'
@@ -421,6 +423,8 @@ function s = compiler_str()
                 if ~isempty(tok)
                     tok = tok{1};
                     switch tok
+                        case '160'
+                            s = 'vc16';    % VS2019
                         case '150'
                             s = 'vc15';    % VS2017
                         case '140'

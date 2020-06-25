@@ -5,6 +5,11 @@
  */
 #include "MxArray.hpp"
 
+#if CV_VERSION_MAJOR > 3
+#define CV_MAX_DIM   32
+const char* cvErrorStr( int status );
+#endif
+
 namespace {
 
 /// Field names for cv::Moments.
@@ -551,7 +556,7 @@ cv::Mat MxArray::toMat(int depth, bool transpose) const
     std::vector<int> d(dims(), dims()+ndims());
     const mwSize ndims = (d.size()>2) ? d.size()-1 : d.size();
     const mwSize nchannels = (d.size()>2) ? d.back() : 1;
-    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
+    depth = (depth == CV_USRTYPE_C1) ? DepthOf[classID()] : depth;
     std::swap(d[0], d[1]);
     cv::Mat mat(ndims, &d[0], CV_MAKETYPE(depth, nchannels));
     // Copy each channel from mxArray to Mat (converting to specified depth),
@@ -588,7 +593,7 @@ cv::MatND MxArray::toMatND(int depth, bool transpose) const
     // Create cv::MatND object (of the specified depth), equivalent to mxArray
     std::vector<int> d(dims(), dims()+ndims());
     std::swap(d[0], d[1]);
-    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
+    depth = (depth == CV_USRTYPE_C1) ? DepthOf[classID()] : depth;
     cv::MatND mat(d.size(), &d[0], CV_MAKETYPE(depth, 1));
     // Copy from mxArray to cv::MatND (converting to specified depth)
     const int type = CV_MAKETYPE(DepthOf[classID()], 1);     // source type
@@ -629,7 +634,7 @@ cv::MatND MxArray::toMatND(int depth, bool) const
     // Create output cv::MatND object of the specified depth, and of same size
     // as mxArray. This is a single-channel multi-dimensional array.
     std::vector<int> d(dims(), dims() + ndims());
-    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
+    depth = (depth == CV_USRTYPE_C1) ? DepthOf[classID()] : depth;
     cv::MatND mat(d.size(), &d[0], CV_MAKETYPE(depth, 1));
 
     // Copy data from mxArray to cv::MatND (converting to specified depth)
@@ -656,7 +661,7 @@ cv::SparseMat MxArray::toSparseMat(int depth) const
             "MxArray is not real 2D double sparse");
 
     // create cv::SparseMat of same size and requested depth
-    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
+    depth = (depth == CV_USRTYPE_C1) ? DepthOf[classID()] : depth;
     const mwSize m = rows(), n = cols();
     const int dims[] = {static_cast<int>(m), static_cast<int>(n)};
     cv::SparseMat mat(2, dims, depth);
@@ -1193,3 +1198,49 @@ std::vector<cv::DMatch> MxArray::toVector() const
             "MxArray unable to convert to std::vector<cv::DMatch>");
     return v;
 }
+
+#if CV_VERSION_MAJOR > 3
+const char* cvErrorStr( int status )
+{
+    static char buf[256];
+
+    switch (status)
+    {
+    // case CV_StsOk :                  return "No Error";
+    // case CV_StsBackTrace :           return "Backtrace";
+    // case CV_StsError :               return "Unspecified error";
+    // case CV_StsInternal :            return "Internal error";
+    // case CV_StsNoMem :               return "Insufficient memory";
+    // case CV_StsBadArg :              return "Bad argument";
+    // case CV_StsNoConv :              return "Iterations do not converge";
+    // case CV_StsAutoTrace :           return "Autotrace call";
+    // case CV_StsBadSize :             return "Incorrect size of input array";
+    // case CV_StsNullPtr :             return "Null pointer";
+    // case CV_StsDivByZero :           return "Division by zero occurred";
+    // case CV_BadStep :                return "Image step is wrong";
+    // case CV_StsInplaceNotSupported : return "Inplace operation is not supported";
+    // case CV_StsObjectNotFound :      return "Requested object was not found";
+    // case CV_BadDepth :               return "Input image depth is not supported by function";
+    // case CV_StsUnmatchedFormats :    return "Formats of input arguments do not match";
+    // case CV_StsUnmatchedSizes :      return "Sizes of input arguments do not match";
+    // case CV_StsOutOfRange :          return "One of the arguments\' values is out of range";
+    // case CV_StsUnsupportedFormat :   return "Unsupported format or combination of formats";
+    // case CV_BadCOI :                 return "Input COI is not supported";
+    // case CV_BadNumChannels :         return "Bad number of channels";
+    // case CV_StsBadFlag :             return "Bad flag (parameter or structure field)";
+    // case CV_StsBadPoint :            return "Bad parameter of type CvPoint";
+    // case CV_StsBadMask :             return "Bad type of mask argument";
+    // case CV_StsParseError :          return "Parsing error";
+    // case CV_StsNotImplemented :      return "The function/feature is not implemented";
+    // case CV_StsBadMemBlock :         return "Memory block has been corrupted";
+    // case CV_StsAssert :              return "Assertion failed";
+    // case CV_GpuNotSupported :        return "No CUDA support";
+    // case CV_GpuApiCallError :        return "Gpu API call";
+    // case CV_OpenGlNotSupported :     return "No OpenGL support";
+    // case CV_OpenGlApiCallError :     return "OpenGL API call";
+    };
+
+    sprintf(buf, "Unknown %s code %d", status >= 0 ? "status":"error", status);
+    return buf;
+}
+#endif
